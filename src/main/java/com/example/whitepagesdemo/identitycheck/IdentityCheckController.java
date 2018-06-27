@@ -29,12 +29,12 @@ public class IdentityCheckController {
         return o;
     }
 
-//    @ApiOperation(value = "Identity Check Details when a csv file is given")
-//    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-//    public Object getLocation(@RequestBody() String csvContent) throws IOException {
-//        ApiRequest[] apiRequests = IdentityCheckUtils.convertCsvToApiRequest(csvContent);
-//        Object o = identityCheckService.performIdCheck(apiRequests);
-//        System.out.println(o);
-//        return o;
-//    }
+    @ApiOperation(value = "Identity Check Details when a csv file is given")
+    @RequestMapping(value = "/csv", method = RequestMethod.POST, produces = "application/json")
+    public Object getLocation(@RequestBody() String csvContent) throws IOException {
+        List<ApiRequest> apiRequests = IdentityCheckUtils.convertCsvToApiRequest(csvContent);
+        List<ApiResponse> o = identityCheckService.performIdCheck(apiRequests);
+        System.out.println(o);
+        return o;
+    }
 }

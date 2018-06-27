@@ -8,7 +8,10 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EmailAddressCheck {
 
+    @JsonProperty("error")
     private Error error;
+
+    @JsonProperty("warnings")
     private String[] warnings;
 
     @JsonProperty(value = "is_valid", required = true)

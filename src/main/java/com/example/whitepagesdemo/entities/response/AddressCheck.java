@@ -6,7 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressCheck {
 
+    @JsonProperty(value = "error")
     private Error error;
+
+    @JsonProperty(value = "warnings")
     private String[] warnings;
 
     @JsonProperty(value = "is_valid", required = true)

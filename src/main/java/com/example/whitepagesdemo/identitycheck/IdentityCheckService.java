@@ -61,7 +61,6 @@ public class IdentityCheckService {
 
 
     private String constructURL(PrimaryDetails primaryDetails) throws UnsupportedEncodingException {
-
         // TODO Add Secondary Fields
         // TODO Add query based on requirements only eg: IP_Address,
         StringBuilder sb = new StringBuilder(WHITEPAGES_IDENTITY_CHECK_API_BASE_URL);
@@ -85,6 +84,6 @@ public class IdentityCheckService {
             return URLEncoder.encode(param, StandardCharsets.UTF_8.toString());
         }
         return "";
-
     }
+
 }

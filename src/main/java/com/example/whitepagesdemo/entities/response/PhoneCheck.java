@@ -6,10 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PhoneCheck {
 
+    @JsonProperty("error")
     private Error error;
+
+    @JsonProperty("warnings")
     private String[] warnings;
 
-    @JsonProperty(value = "is_valid")
+    @JsonProperty("is_valid")
     private boolean isValid;
 
     @JsonProperty("phone_to_name")
