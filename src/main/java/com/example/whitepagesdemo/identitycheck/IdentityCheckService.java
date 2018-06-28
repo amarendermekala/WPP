@@ -3,9 +3,11 @@ package com.example.whitepagesdemo.identitycheck;
 import com.example.whitepagesdemo.entities.request.ApiRequest;
 import com.example.whitepagesdemo.entities.request.PrimaryDetails;
 import com.example.whitepagesdemo.entities.response.ApiResponse;
+import com.example.whitepagesdemo.identitycheck.constants.CommonConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -13,15 +15,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Component
 public class IdentityCheckService {
 
-    private static final String WHITEPAGES_IDENTITY_CHECK_API_BASE_URL = "https://proapi.whitepages.com/3.2/identity_check.json?";
-    private static final String API_KEY = "1935586a1cca45b191e0e382e99f27d7";
+    @Value("${application.name}")
+    private String asd;
 
+    private static final String WHITEPAGES_IDENTITY_CHECK_API_BASE_URL = "https://proapi.whitepages.com/3.2/identity_check.json?";
 
     public List<ApiResponse> performIdCheck(List<ApiRequest> apiRequests) throws IOException {
         List<ApiResponse> allApiResponses = new ArrayList<>();
@@ -40,22 +45,18 @@ public class IdentityCheckService {
                 }
 
                 ObjectMapper objectMapper = new ObjectMapper();
-                // JSONParser parser = new JSONParser();
-                // JSONObject o = (JSONObject) parser.parse(response);
-                // JSONObject newObject = new JSONObject();
-                // newObject.put("ip_address_checks", o.get("ip_address_checks"));
-                // newObject.addProperty(); // o.get("ip_address_checks");
-
-                // convert json string to object
-                // ApiResponse apiResponse = objectMapper.readValue(objectMapper.writeValueAsString(o), ApiResponse.class);
                 ApiResponse apiResponse = objectMapper.readValue(response, ApiResponse.class);
                 apiResponse.setTransactionId(apiRequest.getTransactionId());
                 allApiResponses.add(apiResponse);
-            } catch (Exception e) {
+            } catch (AccessDeniedException e) {
+                throw e;
+            }
+            catch (Exception e) {
                 System.out.println("Exception " + e);
             }
         }
 
+        System.out.print(asd);
         return allApiResponses;
     }
 
@@ -74,7 +75,8 @@ public class IdentityCheckService {
         sb.append("primary.address.country_code=" + encodeParam(primaryDetails.getAddress().getCountryCode()) + "&");
         sb.append("email_address=" + encodeParam(primaryDetails.getEmailAddress()) + "&");
         sb.append("ip_address=" + encodeParam(primaryDetails.getIpAddress()) + "&");
-        sb.append("api_key=" + API_KEY);
+        System.out.println("API Key: " + getWhitePagesApiKey());
+        sb.append("api_key=" + getWhitePagesApiKey());
         System.out.println("SB: " + sb.toString());
         return sb.toString();
     }
@@ -84,6 +86,20 @@ public class IdentityCheckService {
             return URLEncoder.encode(param, StandardCharsets.UTF_8.toString());
         }
         return "";
+    }
+
+    private String getWhitePagesApiKey() {
+        String apiKey = System.getenv(CommonConstants.WHITEPAGES_API_KEY);
+        if(apiKey == null) {
+            try {
+                Properties props = new Properties();
+                props.load(new FileInputStream("application.properties"));
+                apiKey = props.getProperty(CommonConstants.WHITEPAGES_API_KEY);
+            } catch(IOException e) {
+                System.out.println("Properties file not found" + e.getStackTrace());
+            }
+        }
+        return apiKey;
     }
 
 }

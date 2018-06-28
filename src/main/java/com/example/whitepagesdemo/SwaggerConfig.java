@@ -37,11 +37,9 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private ApiInfo metaData() {
         return new ApiInfoBuilder()
-                .title("Spring Boot REST API")
-                .description("REST API for WhitePages Pro")
+                .title("AT&T WhitePages Pro Service")
+                .description("Identity Check API to perform checks on Phone Numbers, Addresses, IP Addresses and Email Addresses")
                 .version("1.0.0")
-                .license("Apache License Version 2.0")
-                .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
                 .build();
     }
 }

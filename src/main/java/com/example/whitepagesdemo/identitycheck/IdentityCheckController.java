@@ -18,23 +18,19 @@ public class IdentityCheckController {
     @Autowired
     IdentityCheckService identityCheckService;
 
-    @ApiOperation(value = "Identity Check Details based on primary details")
+    @ApiOperation(value = "Identity Check Details based on applicant details")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public Object getLocation(@RequestBody() List<ApiRequest> apiRequests) throws IOException {
         if(!IdentityCheckUtils.validateAPIRequest(apiRequests)) {
             return "Api Request is not valid";
         }
-        List<ApiResponse> o = identityCheckService.performIdCheck(apiRequests);
-        System.out.println(o);
-        return o;
+        return identityCheckService.performIdCheck(apiRequests);
     }
 
-    @ApiOperation(value = "Identity Check Details when a csv file is given")
+    @ApiOperation(value = "Identity Check Details when applicant details are submitted in batch in csv format")
     @RequestMapping(value = "/csv", method = RequestMethod.POST, produces = "application/json")
     public Object getLocation(@RequestBody() String csvContent) throws IOException {
         List<ApiRequest> apiRequests = IdentityCheckUtils.convertCsvToApiRequest(csvContent);
-        List<ApiResponse> o = identityCheckService.performIdCheck(apiRequests);
-        System.out.println(o);
-        return o;
+        return identityCheckService.performIdCheck(apiRequests);
     }
 }
